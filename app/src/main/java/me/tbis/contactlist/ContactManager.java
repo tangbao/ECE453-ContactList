@@ -6,11 +6,8 @@ import android.util.Base64;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,23 +29,13 @@ public class ContactManager {
 
         Map<String, ?> allContacts = sharedPref.getAll();
         for(Map.Entry<String, ?>  i : allContacts.entrySet()) {
-            try{
-                String contactString = i.getValue().toString();
-                byte[] base64Product = Base64.decode(contactString, Base64.DEFAULT);
-                ByteArrayInputStream bais = new ByteArrayInputStream(base64Product);
-                ObjectInputStream ois = new ObjectInputStream(bais);
-                ContactInfo contactInfo = (ContactInfo) ois.readObject();
-                if (idmax < contactInfo.getId()){
-                    idmax = contactInfo.getId();
-                }
-                bais.close();
-                ois.close();
-            } catch (Exception e){
-                e.printStackTrace();
+            String contactString = i.getValue().toString();
+            ContactInfo contactInfo = getFromBase64(contactString);
+            if (idmax < contactInfo.getId()){
+                idmax = contactInfo.getId();
             }
         }
         idmax ++;
-
     }
 
     int add(ContactInfo contactInfo, Context context){
@@ -56,64 +43,82 @@ public class ContactManager {
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        try{
-            getMaxID(context);
-            contactInfo.setID(idmax);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(contactInfo);
-            String base64Contact = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-            editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
-            editor.apply();
-            baos.close();
-            oos.close();
-            return idmax;
-        } catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-        }
-        return 0;
+        getMaxID(context);
+        contactInfo.setID(idmax);
+        setRelationship(contactInfo, context);
+        String base64Contact = contactInfo.getBase64();
+        editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
+        editor.apply();
+        Toast.makeText(context,"Add successfully",Toast.LENGTH_LONG).show();
+        return idmax;
     }
 
-    void delete(String id, Context context){
+    private void update(ContactInfo contactInfo, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        editor.remove(id);
+        contactInfo.setChk(false);
+        String base64Contact = contactInfo.getBase64();
+        editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
         editor.apply();
     }
 
-    List <Map <String, Object>> findAll(Context context){
+    void delete(ContactInfo contactInfo, Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        removeRelationship(contactInfo, context);
+        editor.remove(contactInfo.getId()+"");
+        editor.apply();
+    }
+
+    List <ContactInfo> findAll(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         Map<String, ?> allContacts;
-        List <Map <String, Object>> results = new ArrayList <>();
+        List <ContactInfo> results = new ArrayList <>();
         allContacts = sharedPref.getAll();
 
         for(Map.Entry<String, ?>  i : allContacts.entrySet()){
-            Map<String, Object> map = new HashMap<>();
-
-            try{
-                String contactString = i.getValue().toString();
-                byte[] base64Product = Base64.decode(contactString, Base64.DEFAULT);
-                ByteArrayInputStream bais = new ByteArrayInputStream(base64Product);
-                ObjectInputStream ois = new ObjectInputStream(bais);
-                ContactInfo contactInfo = (ContactInfo) ois.readObject();
-                map.put("id", Integer.toString(contactInfo.getId()));
-                map.put("name", contactInfo.getName());
-                map.put("checked", false);
-                results.add(map);
-                bais.close();
-                ois.close();
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
+            String contactString = i.getValue().toString();
+            ContactInfo contactInfo = getFromBase64(contactString);
+            results.add(contactInfo);
         }
         return results;
     }
 
+    private void setRelationship(ContactInfo contactInfo, Context context){
+        List<ContactInfo> contactR = contactInfo.getRelationship();
+        for(int i = 0; i < contactR.size();i++){
+            contactR.get(i).addRelationship(contactInfo);
+            update(contactR.get(i), context);
+        }
+    }
+
+    private void removeRelationship(ContactInfo contactInfo, Context context){
+        List<ContactInfo> contactR = contactInfo.getRelationship();
+        for(int i = 0; i < contactR.size();i++){
+            contactR.get(i).delRelationship(contactInfo);
+            update(contactR.get(i), context);
+        }
+    }
+
+    ContactInfo getFromBase64(String base64){
+        try{
+            byte[] base64Contact = Base64.decode(base64, Base64.DEFAULT);
+            ByteArrayInputStream bais = new ByteArrayInputStream(base64Contact);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            ContactInfo contactInfo = (ContactInfo) ois.readObject();
+            bais.close();
+            ois.close();
+            return contactInfo;
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

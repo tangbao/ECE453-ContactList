@@ -16,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -46,32 +47,25 @@ public class FragProfile extends Fragment {
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences(
                 getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        try{
-            String contactString = sharedPref.getString(show_id,"");
-            byte[] base64Product = Base64.decode(contactString, Base64.DEFAULT);
-            ByteArrayInputStream bais = new ByteArrayInputStream(base64Product);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            ContactInfo contactInfo = (ContactInfo) ois.readObject();
-            final List<Map<String, String>> relationship = contactInfo.getRelationship();
-            showName.setText(contactInfo.getName());
-            showPhone.setText(contactInfo.getPhone()+"");
 
-            adapter = new SimpleAdapter(getContext(), relationship,
-                    android.R.layout.simple_list_item_1,
-                    new String[]{"name"}, new int[]{android.R.id.text1});
-            lv_allrelation.setAdapter(adapter);
-            lv_allrelation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    String details_id = relationship.get(i).get("id");
-                    intent.putExtra("id", details_id);
-                    startActivity(intent);
-                }
-            });
+        final String contactString = sharedPref.getString(show_id,"");
+        ContactManager contactManager = new ContactManager();
+        ContactInfo contactInfo = contactManager.getFromBase64(contactString);
+        final List<ContactInfo> relationship = contactInfo.getRelationship();
+        showName.setText(contactInfo.getName());
+        showPhone.setText(contactInfo.getPhone());
+        adapter = new MyAdapter(getContext(), relationship, 3);
+        lv_allrelation.setAdapter(adapter);
+        Toast.makeText(getContext(),relationship.toString(),Toast.LENGTH_LONG).show();
+        lv_allrelation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), ContactProfile.class);
+                String details_id = relationship.get(i).getId()+"";
+                intent.putExtra("id", details_id);
+                startActivity(intent);
+            }
+        });
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 }

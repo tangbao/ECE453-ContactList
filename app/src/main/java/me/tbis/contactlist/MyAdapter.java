@@ -17,28 +17,18 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class MyAdapter extends BaseAdapter {
     private Context mContext;
-    private List<Map<String,Object>> mList;
+    private List<ContactInfo> mList;
     private LayoutInflater mInflater;
-    public Map<Integer,Boolean> mCBFlag = null;
-    //public Map<String, Integer> mCName = null;
-    public MyAdapter(Context c, List<Map<String,Object>> list){
+    private int mode;
+    public MyAdapter(Context c, List<ContactInfo> list, int mode){
         this.mContext = c;
         this.mList = list;
         mInflater = LayoutInflater.from(mContext);
-        mCBFlag = new HashMap<>();
-        init();
-    }
-
-    public void init(){
-        for (int i = 0; i < mList.size(); i++) {
-            mCBFlag.put(i, false);
-        }
+        this.mode = mode;
     }
 
     @Override
@@ -46,7 +36,7 @@ class MyAdapter extends BaseAdapter {
         return mList.size();
     }
     @Override
-    public Map<String,Object> getItem(int position) {
+    public ContactInfo getItem(int position) {
         return mList.get(position);
     }
     @Override
@@ -59,31 +49,52 @@ class MyAdapter extends BaseAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.contact_listview, null);
+
             holder.mCheckBox = convertView.findViewById(R.id.checkBox);
             holder.mTextView = convertView.findViewById(R.id.textName);
+
+            if(mode == 3){
+                holder.mCheckBox.setVisibility(View.INVISIBLE);
+            }
+
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        //状态保存
-        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    mList.get(position).put("checked", true);
-                    mCBFlag.put(position, true);
-                }else{
-                    mList.get(position).put("checked", false);
-                    mCBFlag.put(position, false);
+                mList.get(position).setChk(isChecked);
+                if(mode == 2){
+                    if(isChecked){
+                        for(int i = 0;i<position;i++){
+                            if(!mList.get(i).getChk()){
+                                ContactInfo temp = mList.get(i);
+                                mList.set(i, mList.get(position));
+                                mList.set(position, temp);
+                                notifyDataSetChanged();
+                                break;
+                            }
+                        }
+                    }else{
+                        int p_now = position;
+                        for(int i = position;i<mList.size();i++){
+                            if(mList.get(i).getChk()){
+                                ContactInfo temp = mList.get(i);
+                                mList.set(i, mList.get(p_now));
+                                mList.set(p_now, temp);
+                                p_now = i;
+                                notifyDataSetChanged();
+                            }
+                        }
+                    }
                 }
             }
         });
 
-        //holder.mCheckBox.setChecked(mCBFlag.get(position));
-        boolean status = mList.get(position).getChk();
-        holder.mCheckBox.setChecked();
-        holder.mTextView.setText(mList.get(position).get("name").toString());
+        holder.mCheckBox.setChecked(mList.get(position).getChk());
+        holder.mTextView.setText(mList.get(position).getName());
 
         return convertView;
     }

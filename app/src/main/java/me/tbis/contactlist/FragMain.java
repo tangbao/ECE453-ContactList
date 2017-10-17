@@ -23,7 +23,7 @@ public class FragMain extends Fragment {
     private ListView lv_contact;
     private MyAdapter adapter;
     private ContactManager contactManager;
-    private List<Map<String, Object>> listContacts;
+    private List<ContactInfo> listContacts;
 
     @Override
     public void onAttach(Context context) {
@@ -39,7 +39,7 @@ public class FragMain extends Fragment {
         lv_contact = view.findViewById(R.id.lv_contact);
         contactManager = new ContactManager();
         listContacts = contactManager.findAll(getContext());
-        adapter = new MyAdapter(getContext(), listContacts);
+        adapter = new MyAdapter(getContext(), listContacts,1);
 
         lv_contact.setAdapter(adapter);
         lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -51,8 +51,9 @@ public class FragMain extends Fragment {
                 }
                 else {
                     Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    String details_id = listContacts.get(position).get("id").toString();
+                    String details_id = listContacts.get(position).getId()+"";
                     intent.putExtra("id", details_id);
+                    getActivity().finish();
                     startActivity(intent);
                 }
             }
@@ -64,12 +65,9 @@ public class FragMain extends Fragment {
     public void onResume(Bundle bundle){
         super.onResume();
         Intent intent = getActivity().getIntent();
-        String new_id = intent.getStringExtra("new_id");
         String new_contact = intent.getStringExtra("new_contact");
-        Map <String, Object> map = new HashMap<>();
-        map.put("id", new_id);
-        map.put("name", new_contact);
-        listContacts.add(map);
+        ContactInfo contactInfo = contactManager.getFromBase64(new_contact);
+        listContacts.add(contactInfo);
         adapter.notifyDataSetChanged();
     }
 
@@ -100,34 +98,17 @@ public class FragMain extends Fragment {
             }
         });
 
-        //final List<Map<String, Object>> to_del = new ArrayList<>();
         btn_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (Map.Entry<Integer, Boolean> i : adapter.mCBFlag.entrySet()) {
-                    boolean if_check = i.getValue();
-                    if(if_check){
-                        int position = i.getKey();
-                        Map<String, Object> map = new HashMap<>();
-                        //map.put("");
-                        //to_del.add(map);
-                        String del_id = adapter.getItem(position).get("id").toString();
-                        contactManager.delete(del_id, getContext());
-                        listContacts.remove(position);
+                for(int i = 0; i<listContacts.size();i++){
+                    if(listContacts.get(i).getChk()){
+                        contactManager.delete(listContacts.get(i), getContext());
+                        listContacts.remove(i);
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "Delete Successfully", Toast.LENGTH_LONG).show();
+                        i--;
                     }
                 }
-                //Toast.makeText(getContext(), to_del.toString(), Toast.LENGTH_LONG).show();
-//                for(int i = 0;i<to_del.size();i++)
-//                {
-//                    int id = to_del.get(i);
-//                    listContacts.remove(id);
-//                    i--;
-//                }
-                //listContacts.removeAll(to_del) ;
-                adapter.notifyDataSetChanged();
-                adapter.init();
             }
 
         });
