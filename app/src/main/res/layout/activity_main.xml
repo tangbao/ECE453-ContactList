@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="me.tbis.contactlist.MainActivity"
+
+    >
+
+
+    <fragment
+        android:id="@+id/frag_main"
+        android:name="me.tbis.contactlist.FragMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/frag_main"
+        />
+
+</LinearLayout>
