@@ -1,10 +1,16 @@
 package me.tbis.contactlist;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class ContactDetails extends AppCompatActivity implements MyInterface.OnContactSelectedListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ContactDetails extends AppCompatActivity implements MyInterface.OnContactSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,4 +28,5 @@ public class ContactDetails extends AppCompatActivity implements MyInterface.OnC
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 }

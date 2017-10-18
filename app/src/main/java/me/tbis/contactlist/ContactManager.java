@@ -72,6 +72,7 @@ public class ContactManager {
         removeRelationship(contactInfo, context);
         editor.remove(contactInfo.getId()+"");
         editor.apply();
+        Toast.makeText(context,"Delete successfully",Toast.LENGTH_LONG).show();
     }
 
     List <ContactInfo> findAll(Context context){

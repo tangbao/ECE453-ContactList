@@ -47,7 +47,7 @@ public class FragProfile extends Fragment {
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
 
         String contactString ;
-        Toast.makeText(getContext(),"fuck",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(),"fuck",Toast.LENGTH_LONG).show();
 
          if(if_land){
              contactString = getArguments().getString("contact");

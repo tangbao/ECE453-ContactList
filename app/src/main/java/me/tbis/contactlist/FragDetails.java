@@ -17,7 +17,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
+import me.tbis.contactlist.MyInterface.*;
+
+import static android.app.Activity.RESULT_OK;
 
 public class FragDetails extends Fragment {
     private boolean if_land;
@@ -28,8 +30,6 @@ public class FragDetails extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallback = (OnContactSelectedListener) context;
-
-
     }
 
     @Override
@@ -87,11 +87,17 @@ public class FragDetails extends Fragment {
                             relationship, false);
                     contactManager.add(contactInfo, getContext());
 
-                    Intent intent = new Intent();
-                    String contactBase64 = contactInfo.getBase64();
-                    intent.putExtra("new_contact", contactBase64);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
+                    //Toast.makeText(getContext(),contactInfo.toString(),Toast.LENGTH_LONG).show();
+//                    mAddReturn.onAddReturn(contactInfo);
+                    if(if_land){
+                        //mAddReturn.onAddReturn(contactInfo);
+                    }else{
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        String contactBase64 = contactInfo.getBase64();
+                        intent.putExtra("new_contact", contactBase64);
+                        getActivity().setResult(RESULT_OK, intent);
+                        getActivity().finish();
+                    }
                 }
 
             }

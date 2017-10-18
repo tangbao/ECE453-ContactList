@@ -4,9 +4,13 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Adapter;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MyInterface.OnContactSelectedListener{
-    private String new_contact;
+    //private String new_contact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +35,5 @@ public class MainActivity extends AppCompatActivity implements MyInterface.OnCon
     }
 
 
-    public void onAddReturn(ContactInfo contactInfo){
-        ContactManager contactManager = new ContactManager();
-        FragMain fragMain = new FragMain();
-        contactInfo = contactManager.getFromBase64(new_contact);
-        fragMain.listContacts.add(contactInfo);
-        fragMain.adapter.notifyDataSetChanged();
-    }
-
-    public void onAddClickP(){
-        Intent intent = new Intent(this, ContactDetails.class);
-        startActivityForResult(intent, 0);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent){
-        new_contact = intent.getStringExtra("new_contact");
-    }
 
 }

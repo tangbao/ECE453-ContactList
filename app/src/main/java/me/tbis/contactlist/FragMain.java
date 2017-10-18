@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import java.util.List;
@@ -80,7 +81,6 @@ public class FragMain extends Fragment{
                 else {
                     Intent intent = new Intent(getActivity(), ContactDetails.class);
                     startActivityForResult(intent, 0);
-                    //mAddClickP.onAddClickP();
                 }
             }
         });
@@ -101,6 +101,13 @@ public class FragMain extends Fragment{
         });
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        String new_contact = intent.getStringExtra("new_contact");
+        ContactManager contactManager = new ContactManager();
+        ContactInfo contactInfo = contactManager.getFromBase64(new_contact);
+        listContacts.add(contactInfo);
+        adapter.notifyDataSetChanged();
+    }
 
 }
