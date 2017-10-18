@@ -1,5 +1,6 @@
 package me.tbis.contactlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,25 +11,26 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 
-public class FragMain extends Fragment {
+
+public class FragMain extends Fragment{
     private boolean if_land;
     private ListView lv_contact;
-    private MyAdapter adapter;
+    MyAdapter adapter;
     private ContactManager contactManager;
-    private List<ContactInfo> listContacts;
+    List<ContactInfo> listContacts;
+    MyInterface.OnContactSelectedListener mCallback;
+    MyInterface.OnAddClickPListener mAddClickP;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        mCallback = (MyInterface.OnContactSelectedListener) context;
+        mAddClickP = (MyInterface.OnAddClickPListener) context;
     }
 
     @Override
@@ -40,49 +42,34 @@ public class FragMain extends Fragment {
         contactManager = new ContactManager();
         listContacts = contactManager.findAll(getContext());
         adapter = new MyAdapter(getContext(), listContacts,1);
-
         lv_contact.setAdapter(adapter);
-        lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if(if_land) {
-                    Fragment fragment = new FragProfile();
-                    getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
-                }
-                else {
-                    Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    String details_id = listContacts.get(position).getId()+"";
-                    intent.putExtra("id", details_id);
-                    getActivity().finish();
-                    startActivity(intent);
-                }
-            }
-        });
 
         return view;
-    }
-
-    public void onResume(Bundle bundle){
-        super.onResume();
-        Intent intent = getActivity().getIntent();
-        String new_contact = intent.getStringExtra("new_contact");
-        ContactInfo contactInfo = contactManager.getFromBase64(new_contact);
-        listContacts.add(contactInfo);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        if (getActivity().findViewById(R.id.frame_right) != null) {
-            if_land = true;
-        } else {
-            if_land = false;
-        }
+        if_land = (getActivity().findViewById(R.id.frame_right) != null);
 
         Button btn_add = getActivity().findViewById(R.id.btn_add);
         Button btn_del = getActivity().findViewById(R.id.btn_del);
+
+        lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(if_land) {
+                    mCallback.onContactSelected(listContacts.get(position));
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), ContactProfile.class);
+                    ContactInfo contactInfo = listContacts.get(position);
+                    intent.putExtra("contact", contactInfo.getBase64());
+                    startActivity(intent);
+                }
+            }
+        });
 
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,8 +79,9 @@ public class FragMain extends Fragment {
                     getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
                 }
                 else {
-                    Intent intent = new Intent(getActivity(), ContactDetails.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), ContactDetails.class);
+//                    startActivityForResult(intent, 0);
+                    mAddClickP.onAddClickP();
                 }
             }
         });
@@ -113,5 +101,7 @@ public class FragMain extends Fragment {
 
         });
     }
+
+
 
 }

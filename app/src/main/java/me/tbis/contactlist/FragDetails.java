@@ -1,5 +1,7 @@
 package me.tbis.contactlist;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -21,6 +23,14 @@ import me.tbis.contactlist.MyAdapter;
 
 
 public class FragDetails extends Fragment {
+    private boolean if_land;
+    MyInterface.OnContactSelectedListener mCallback;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallback = (MyInterface.OnContactSelectedListener) context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,6 +43,8 @@ public class FragDetails extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if_land = (getActivity().findViewById(R.id.frame_right) != null);
+
         Button btn_ap = getActivity().findViewById(R.id.btn_ap);
         ListView lv_relation = getActivity().findViewById(R.id.lv_relation);
         final ContactManager contactManager = new ContactManager();
@@ -42,10 +54,14 @@ public class FragDetails extends Fragment {
         lv_relation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            if(if_land){
+                mCallback.onContactSelected(allContact.get(i));
+            }else{
                 Intent intent = new Intent(getActivity(), ContactProfile.class);
-                String details_id = allContact.get(i).getId()+"";
-                intent.putExtra("id", details_id);
+                String contactS = allContact.get(i).getBase64();
+                intent.putExtra("contact", contactS);
                 startActivity(intent);
+            }
             }
         });
 
@@ -71,17 +87,16 @@ public class FragDetails extends Fragment {
                             relationship, false);
                     contactManager.add(contactInfo, getContext());
 
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent();
                     String contactBase64 = contactInfo.getBase64();
                     intent.putExtra("new_contact", contactBase64);
-                    startActivity(intent);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }
 
             }
         });
     }
-
 
 
 }
