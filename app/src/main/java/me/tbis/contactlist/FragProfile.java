@@ -16,16 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-
+import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
 public class FragProfile extends Fragment {
     private boolean if_land;
-    MyInterface.OnContactSelectedListener mCallback;
+    OnContactSelectedListener mCallback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallback = (MyInterface.OnContactSelectedListener) context;
+        mCallback = (OnContactSelectedListener) context;
+
+        try {
+            mCallback = (OnContactSelectedListener) context;
+        } catch (ClassCastException e) {
+            Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

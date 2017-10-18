@@ -1,11 +1,11 @@
 package me.tbis.contactlist;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements MyInterface.OnContactSelectedListener,
-        MyInterface.OnAddReturnListener, MyInterface.OnAddClickPListener{
+public class MainActivity extends AppCompatActivity implements MyInterface.OnContactSelectedListener{
     private String new_contact;
 
     @Override
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements MyInterface.OnCon
             Bundle bundle = new Bundle();
             bundle.putString("contact", contactInfo.getBase64());
             fragProfile.setArguments(bundle);
-            android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
             // 无论 fragment_container 视图里是什么，用该 Fragment 替换它。并将
             // 该事务添加至回栈，以便用户可以往回导航（译注：回栈，即 Back Stack。
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements MyInterface.OnCon
             transaction.addToBackStack(null);
             transaction.commit();
     }
+
 
     public void onAddReturn(ContactInfo contactInfo){
         ContactManager contactManager = new ContactManager();

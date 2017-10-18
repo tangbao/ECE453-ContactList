@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
+import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
 
 public class FragMain extends Fragment{
@@ -23,14 +24,12 @@ public class FragMain extends Fragment{
     MyAdapter adapter;
     private ContactManager contactManager;
     List<ContactInfo> listContacts;
-    MyInterface.OnContactSelectedListener mCallback;
-    MyInterface.OnAddClickPListener mAddClickP;
+    OnContactSelectedListener mCallback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallback = (MyInterface.OnContactSelectedListener) context;
-        mAddClickP = (MyInterface.OnAddClickPListener) context;
+        mCallback = (OnContactSelectedListener) context;
     }
 
     @Override
@@ -79,9 +78,9 @@ public class FragMain extends Fragment{
                     getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
                 }
                 else {
-//                    Intent intent = new Intent(getActivity(), ContactDetails.class);
-//                    startActivityForResult(intent, 0);
-                    mAddClickP.onAddClickP();
+                    Intent intent = new Intent(getActivity(), ContactDetails.class);
+                    startActivityForResult(intent, 0);
+                    //mAddClickP.onAddClickP();
                 }
             }
         });

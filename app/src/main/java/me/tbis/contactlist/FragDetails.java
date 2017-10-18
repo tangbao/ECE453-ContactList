@@ -15,21 +15,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import me.tbis.contactlist.MyAdapter;
-
+import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
 public class FragDetails extends Fragment {
     private boolean if_land;
-    MyInterface.OnContactSelectedListener mCallback;
+    OnContactSelectedListener mCallback;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mCallback = (MyInterface.OnContactSelectedListener) context;
+        mCallback = (OnContactSelectedListener) context;
+
+
     }
 
     @Override

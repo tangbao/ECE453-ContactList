@@ -10,7 +10,6 @@ public class MyInterface {
         void onContactSelected(ContactInfo contactInfo);
     }
 
-
     interface OnAddReturnListener{
         void onAddReturn(ContactInfo contactInfo);
     }
