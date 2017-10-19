@@ -15,7 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.tbis.contactlist.MyInterface.*;
 
@@ -74,11 +76,14 @@ public class FragDetails extends Fragment {
                 if(etName.getText().toString().isEmpty() || etPhone.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"You must fill in all the info!",Toast.LENGTH_LONG).show();
                 }else{
-                    List<ContactInfo> relationship = new ArrayList<ContactInfo>();
+                    List<Map<String, String>> relationship = new ArrayList<>();
 
                     for(int i = 0; i<allContact.size();i++){
                         if(allContact.get(i).getChk()){
-                            relationship.add(allContact.get(i));
+                            Map<String, String> map = new HashMap<>();
+                            map.put("id", allContact.get(i).getId()+"");
+                            map.put("name", allContact.get(i).getName());
+                            relationship.add(map);
                         }
                     }
 
@@ -99,7 +104,6 @@ public class FragDetails extends Fragment {
                         getActivity().finish();
                     }
                 }
-
             }
         });
     }

@@ -5,6 +5,16 @@ package me.tbis.contactlist;
  *
  * Created by tzzma on 2017/10/15.
  *
+ * MyAdapter(Context c, List<ContactInfo> list, int mode)
+ *
+ * list: contents all the contacts
+ *
+ * mode 1: for MainActivity/FragMain, normal style, a textView with a checkBox
+ *
+ * mode 2: for ContactDetails/FragDetails, the selected Item will jump to the top
+ *
+ * mode 3: for ContactProfile/FragProfile, the checkboxes are invisible
+ *
  */
 
 

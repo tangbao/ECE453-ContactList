@@ -38,41 +38,39 @@ public class ContactManager {
         idmax ++;
     }
 
-    int add(ContactInfo contactInfo, Context context){
+    void add(ContactInfo contactInfo, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         getMaxID(context);
         contactInfo.setID(idmax);
-        setRelationship(contactInfo, context);
+        //setRelationship(contactInfo, context);
         String base64Contact = contactInfo.getBase64();
         editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
         editor.apply();
         Toast.makeText(context,"Add successfully",Toast.LENGTH_LONG).show();
-        return idmax;
     }
 
-    private void update(ContactInfo contactInfo, Context context){
-        SharedPreferences sharedPref = context.getSharedPreferences(
-                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        contactInfo.setChk(false);
-        String base64Contact = contactInfo.getBase64();
-        editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
-        editor.apply();
-    }
+//    private void update(ContactInfo contactInfo, Context context){
+//        SharedPreferences sharedPref = context.getSharedPreferences(
+//                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//
+//        contactInfo.setChk(false);
+//        String base64Contact = contactInfo.getBase64();
+//        editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
+//        editor.apply();
+//    }
 
     void delete(ContactInfo contactInfo, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        removeRelationship(contactInfo, context);
-        editor.remove(contactInfo.getId()+"");
+        //removeRelationship(contactInfo, context);
+        editor.remove(Integer.toString(contactInfo.getId()));
         editor.apply();
-        Toast.makeText(context,"Delete successfully",Toast.LENGTH_LONG).show();
     }
 
     List <ContactInfo> findAll(Context context){
@@ -91,20 +89,67 @@ public class ContactManager {
         return results;
     }
 
-    private void setRelationship(ContactInfo contactInfo, Context context){
-        List<ContactInfo> contactR = contactInfo.getRelationship();
+//    private void setRelationship(ContactInfo contactInfo, Context context){
+//        List<ContactInfo> contactR = contactInfo.getRelationship();
+//        for(int i = 0; i < contactR.size();i++){
+//            contactR.get(i).addRelationship(contactInfo);
+//            update(contactR.get(i), context);
+//        }
+//    }
+//
+//    private void removeRelationship(ContactInfo contactInfo, Context context){
+//        List<ContactInfo> contactR = contactInfo.getRelationship();
+//        for(int i = 0; i < contactR.size();i++){
+//            contactR.get(i).delRelationship(contactInfo);
+//            update(contactR.get(i), context);
+//        }
+//    }
+
+    List<ContactInfo> listAddUpdate(List<ContactInfo> list, ContactInfo contactInfo, Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        ContactManager contactManager = new ContactManager();
+        List<Map<String, String>> contactR = contactInfo.getRelationship();
+
         for(int i = 0; i < contactR.size();i++){
-            contactR.get(i).addRelationship(contactInfo);
-            update(contactR.get(i), context);
+            String base64Contact = sharedPref.getString(contactR.get(i).get("id"), "");
+            ContactInfo contactUpdating = contactManager.getFromBase64(base64Contact);
+            contactUpdating.addRelationship(contactInfo);
+            editor.putString(contactR.get(i).get("id") ,contactUpdating.getBase64());
+            for(int j = 0; j<list.size();j++) {
+                if(list.get(j).getId() == Integer.valueOf(contactR.get(i).get("id")) ){
+                    list.get(j).addRelationship(contactInfo);
+                    break;
+                }
+            }
         }
+        list.add(contactInfo);
+        editor.apply();
+        return list;
     }
 
-    private void removeRelationship(ContactInfo contactInfo, Context context){
-        List<ContactInfo> contactR = contactInfo.getRelationship();
+    List<ContactInfo> listDelUpdate(List<ContactInfo> list, ContactInfo contactInfo, Context context){
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        ContactManager contactManager = new ContactManager();
+        List<Map<String, String>> contactR = contactInfo.getRelationship();
+
         for(int i = 0; i < contactR.size();i++){
-            contactR.get(i).delRelationship(contactInfo);
-            update(contactR.get(i), context);
+            String base64Contact = sharedPref.getString(contactR.get(i).get("id"), "");
+            ContactInfo contactUpdating = contactManager.getFromBase64(base64Contact);
+            contactUpdating.delRelationship(contactInfo);
+            editor.putString(contactR.get(i).get("id") ,contactUpdating.getBase64());
+            for(int j = 0; j<list.size();j++) {
+                if(list.get(j).getId() == Integer.valueOf(contactR.get(i).get("id")) ){
+                    list.get(j).delRelationship(contactInfo);
+                    break;
+                }
+            }
         }
+        editor.apply();
+        return list;
     }
 
     ContactInfo getFromBase64(String base64){
@@ -121,5 +166,4 @@ public class ContactManager {
             return null;
         }
     }
-
 }

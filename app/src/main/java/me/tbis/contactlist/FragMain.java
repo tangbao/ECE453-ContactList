@@ -18,6 +18,8 @@ import java.util.List;
 
 import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class FragMain extends Fragment{
     private boolean if_land;
@@ -37,6 +39,9 @@ public class FragMain extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_main, container, false);
+
+
+
 
         lv_contact = view.findViewById(R.id.lv_contact);
         contactManager = new ContactManager();
@@ -75,7 +80,7 @@ public class FragMain extends Fragment{
             @Override
             public void onClick(View view) {
                 if(if_land) {
-                    Fragment fragment = new FragDetails();
+                    FragDetails fragment = new FragDetails();
                     getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
                 }
                 else {
@@ -90,6 +95,7 @@ public class FragMain extends Fragment{
             public void onClick(View view) {
                 for(int i = 0; i<listContacts.size();i++){
                     if(listContacts.get(i).getChk()){
+                        listContacts = contactManager.listDelUpdate(listContacts, listContacts.get(i), getContext());
                         contactManager.delete(listContacts.get(i), getContext());
                         listContacts.remove(i);
                         adapter.notifyDataSetChanged();
@@ -103,11 +109,12 @@ public class FragMain extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
-        String new_contact = intent.getStringExtra("new_contact");
-        ContactManager contactManager = new ContactManager();
-        ContactInfo contactInfo = contactManager.getFromBase64(new_contact);
-        listContacts.add(contactInfo);
-        adapter.notifyDataSetChanged();
+        if (resultCode == RESULT_OK){
+            String new_contact = intent.getStringExtra("new_contact");
+            ContactManager contactManager = new ContactManager();
+            ContactInfo contactInfo = contactManager.getFromBase64(new_contact);
+            listContacts = contactManager.listAddUpdate(listContacts, contactInfo, getContext());
+            adapter.notifyDataSetChanged();
+        }
     }
-
 }

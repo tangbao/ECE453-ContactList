@@ -29,4 +29,10 @@ public class ContactDetails extends AppCompatActivity implements MyInterface.OnC
         transaction.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        setResult(RESULT_CANCELED, intent);
+        super.onBackPressed();
+    }
 }

@@ -3,6 +3,7 @@ package me.tbis.contactlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -15,7 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
 public class FragProfile extends Fragment {
@@ -63,12 +67,20 @@ public class FragProfile extends Fragment {
 
         ContactManager contactManager = new ContactManager();
         final ContactInfo contactInfo = contactManager.getFromBase64(contactString);
-        final List<ContactInfo> relationship = contactInfo.getRelationship();
+        final List<Map<String, String>> relationshipL = contactInfo.getRelationship();
+        final List<ContactInfo> relationship = new ArrayList<>();
+        final SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        for(int i = 0; i<relationshipL.size();i++){
+            String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
+            ContactInfo contactC = contactManager.getFromBase64(contactS);
+            relationship.add(contactC);
+        }
+
         showName.setText(contactInfo.getName());
         showPhone.setText(contactInfo.getPhone());
         adapter = new MyAdapter(getContext(), relationship, 3);
         lv_allrelation.setAdapter(adapter);
-        Toast.makeText(getContext(),relationship.toString(),Toast.LENGTH_LONG).show();
         lv_allrelation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -76,7 +88,8 @@ public class FragProfile extends Fragment {
                     mCallback.onContactSelected(relationship.get(i));
                 }else{
                     Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    String contactS = relationship.get(i).getBase64();
+                    //String contactS = relationship.get(i).getBase64();
+                    String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
                     intent.putExtra("contact", contactS);
                     startActivity(intent);
                 }

@@ -7,7 +7,9 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tzzma on 2017/10/11.
@@ -18,11 +20,11 @@ public class ContactInfo implements Serializable {
     private int id;
     private String name;
     private String phone;
-    private List<ContactInfo> relationship;
+    private List<Map<String, String>> relationship;
     private boolean chk;
 //    private String pic;
 
-    ContactInfo(int id, String name, String phone, List<ContactInfo> relationship, boolean chk){
+    ContactInfo(int id, String name, String phone, List<Map<String, String>> relationship, boolean chk){
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -30,14 +32,6 @@ public class ContactInfo implements Serializable {
         this.chk = chk;
         //this.pic = "moren";
     }
-//    ContactInfo(int id, String name, String phone, List<ContactInfo> relationship, boolean chk, String pic){
-//        this.id = id;
-//        this.name = name;
-//        this.phone = phone;
-//        this.relationship = relationship;
-//        this.chk = chk;
-//        this.pic = pic;
-//    }
 
     String getBase64(){
         try{
@@ -66,7 +60,7 @@ public class ContactInfo implements Serializable {
         return phone;
     }
 
-    List<ContactInfo> getRelationship(){
+    List<Map<String, String>> getRelationship(){
         return relationship;
     }
 
@@ -79,11 +73,17 @@ public class ContactInfo implements Serializable {
     }
 
     void addRelationship(ContactInfo newR){
-        this.relationship.add(newR);
+        Map<String, String> map = new HashMap<>();
+        map.put("id", newR.getId()+"");
+        map.put("name", newR.getName());
+        this.relationship.add(map);
     }
 
     void delRelationship(ContactInfo delR){
-        this.relationship.remove(delR);
+        Map<String, String> map = new HashMap<>();
+        map.put("id", delR.getId()+"");
+        map.put("name", delR.getName());
+        this.relationship.remove(map);
     }
 
     void setChk(boolean b){
