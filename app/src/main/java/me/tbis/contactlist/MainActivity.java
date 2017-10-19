@@ -1,5 +1,6 @@
 package me.tbis.contactlist;
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +10,21 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MyInterface.OnContactSelectedListener{
-    //private String new_contact;
+public class MainActivity extends AppCompatActivity implements
+        MyInterface.OnContactSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (findViewById(R.id.frame_left) != null) {
+            FragMain fragMain = new FragMain();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_left, fragMain);
+            transaction.commit();
+        }
+
     }
 
     public void onContactSelected(ContactInfo contactInfo){
@@ -33,7 +42,5 @@ public class MainActivity extends AppCompatActivity implements MyInterface.OnCon
             transaction.addToBackStack(null);
             transaction.commit();
     }
-
-
 
 }

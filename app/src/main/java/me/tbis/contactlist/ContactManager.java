@@ -52,17 +52,6 @@ public class ContactManager {
         Toast.makeText(context,"Add successfully",Toast.LENGTH_LONG).show();
     }
 
-//    private void update(ContactInfo contactInfo, Context context){
-//        SharedPreferences sharedPref = context.getSharedPreferences(
-//                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//
-//        contactInfo.setChk(false);
-//        String base64Contact = contactInfo.getBase64();
-//        editor.putString(Integer.toString(contactInfo.getId()), base64Contact);
-//        editor.apply();
-//    }
-
     void delete(ContactInfo contactInfo, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
@@ -88,22 +77,6 @@ public class ContactManager {
         }
         return results;
     }
-
-//    private void setRelationship(ContactInfo contactInfo, Context context){
-//        List<ContactInfo> contactR = contactInfo.getRelationship();
-//        for(int i = 0; i < contactR.size();i++){
-//            contactR.get(i).addRelationship(contactInfo);
-//            update(contactR.get(i), context);
-//        }
-//    }
-//
-//    private void removeRelationship(ContactInfo contactInfo, Context context){
-//        List<ContactInfo> contactR = contactInfo.getRelationship();
-//        for(int i = 0; i < contactR.size();i++){
-//            contactR.get(i).delRelationship(contactInfo);
-//            update(contactR.get(i), context);
-//        }
-//    }
 
     List<ContactInfo> listAddUpdate(List<ContactInfo> list, ContactInfo contactInfo, Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(

@@ -1,15 +1,19 @@
 package me.tbis.contactlist;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.ContentFrameLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +29,10 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragDetails extends Fragment {
     private boolean if_land;
+    private ContactInfo contactInfo;
+    private List<ContactInfo> allContact;
     OnContactSelectedListener mCallback;
+
 
 
     @Override
@@ -50,7 +57,7 @@ public class FragDetails extends Fragment {
         Button btn_ap = getActivity().findViewById(R.id.btn_ap);
         ListView lv_relation = getActivity().findViewById(R.id.lv_relation);
         final ContactManager contactManager = new ContactManager();
-        final List<ContactInfo> allContact =  contactManager.findAll(getContext());
+        allContact =  contactManager.findAll(getContext());
         MyAdapter adapter = new MyAdapter(getContext(), allContact,2);
         lv_relation.setAdapter(adapter);
         lv_relation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,15 +94,21 @@ public class FragDetails extends Fragment {
                         }
                     }
 
-                    ContactInfo contactInfo = new ContactInfo(0,
+                    contactInfo = new ContactInfo(0,
                             etName.getText().toString(), etPhone.getText().toString(),
                             relationship, false);
                     contactManager.add(contactInfo, getContext());
 
-                    //Toast.makeText(getContext(),contactInfo.toString(),Toast.LENGTH_LONG).show();
-//                    mAddReturn.onAddReturn(contactInfo);
                     if(if_land){
-                        //mAddReturn.onAddReturn(contactInfo);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        allContact = contactManager.listAddUpdate(allContact, contactInfo, getContext());
+                        FragMain fragMain = new FragMain();
+                        fragmentTransaction.replace(R.id.frame_left,fragMain);
+                        ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
+                        cfl.removeAllViews();
+                        fragmentTransaction.commit();
+
                     }else{
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         String contactBase64 = contactInfo.getBase64();
@@ -107,6 +120,5 @@ public class FragDetails extends Fragment {
             }
         });
     }
-
 
 }

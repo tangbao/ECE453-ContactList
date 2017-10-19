@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.ContentFrameLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +26,9 @@ import static android.app.Activity.RESULT_OK;
 public class FragMain extends Fragment{
     private boolean if_land;
     private ListView lv_contact;
-    MyAdapter adapter;
+    private MyAdapter adapter;
     private ContactManager contactManager;
-    List<ContactInfo> listContacts;
+    private List<ContactInfo> listContacts;
     OnContactSelectedListener mCallback;
 
     @Override
@@ -39,9 +41,6 @@ public class FragMain extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_main, container, false);
-
-
-
 
         lv_contact = view.findViewById(R.id.lv_contact);
         contactManager = new ContactManager();
@@ -82,7 +81,16 @@ public class FragMain extends Fragment{
                 if(if_land) {
                     FragDetails fragment = new FragDetails();
                     getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
-                }
+                        if(getArguments() != null)
+                        {
+                            Toast.makeText(getContext(),"nmb",Toast.LENGTH_LONG).show();
+                            String contactString = getArguments().getString("contact");
+                            ContactManager contactManager = new ContactManager();
+                            ContactInfo contactInfo = contactManager.getFromBase64(contactString);
+                            listContacts.add(contactInfo);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
                 else {
                     Intent intent = new Intent(getActivity(), ContactDetails.class);
                     startActivityForResult(intent, 0);
@@ -102,6 +110,11 @@ public class FragMain extends Fragment{
                         i--;
                     }
                 }
+                Toast.makeText(getContext(), "Delete Successfully", Toast.LENGTH_LONG).show();
+                if(if_land){
+                    ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
+                    cfl.removeAllViews();
+                }
             }
 
         });
@@ -117,4 +130,5 @@ public class FragMain extends Fragment{
             adapter.notifyDataSetChanged();
         }
     }
+
 }

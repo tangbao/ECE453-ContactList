@@ -30,12 +30,6 @@ public class FragProfile extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallback = (OnContactSelectedListener) context;
-
-        try {
-            mCallback = (OnContactSelectedListener) context;
-        } catch (ClassCastException e) {
-            Toast.makeText(context,e.toString(),Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -51,7 +45,6 @@ public class FragProfile extends Fragment {
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
 
         String contactString ;
-        //Toast.makeText(getContext(),"fuck",Toast.LENGTH_LONG).show();
 
          if(if_land){
              contactString = getArguments().getString("contact");
@@ -88,7 +81,6 @@ public class FragProfile extends Fragment {
                     mCallback.onContactSelected(relationship.get(i));
                 }else{
                     Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    //String contactS = relationship.get(i).getBase64();
                     String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
                     intent.putExtra("contact", contactS);
                     startActivity(intent);
