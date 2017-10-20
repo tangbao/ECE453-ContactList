@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.ContentFrameLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,12 @@ public class FragProfile extends Fragment {
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
         //if_land_from_self = (getActivity().findViewById(R.id.frameP_right) != null);
 
+
+        final boolean if_m = getActivity().findViewById(R.id.frame_right) != null;
+        final boolean if_d = getActivity().findViewById(R.id.frameD_right) != null;
+        final boolean if_p = getActivity().findViewById(R.id.frameP_right) != null;
+
+
 //        if_land = (getActivity().findViewById(R.id.frame_right) != null) ||
 //                (getActivity().findViewById(R.id.frameD_right) != null) ||
 //                (getActivity().findViewById(R.id.frameP_right) != null);
@@ -70,34 +78,48 @@ public class FragProfile extends Fragment {
              contactString = intent.getStringExtra("contact");
          }
 
-        contactInfo = contactManager.getFromBase64(contactString);
-        relationshipL = contactInfo.getRelationship();
-        relationship = new ArrayList<>();
-        sharedPref = getActivity().getSharedPreferences(
-                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        for(int i = 0; i<relationshipL.size();i++){
-            String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
-            ContactInfo contactC = contactManager.getFromBase64(contactS);
-            relationship.add(contactC);
-        }
-
-        showName.setText(contactInfo.getName());
-        showPhone.setText(contactInfo.getPhone());
-        adapter = new MyAdapter(getContext(), relationship, 3);
-        lv_allrelation.setAdapter(adapter);
-        lv_allrelation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(if_land){
-                    mCallback.onContactSelected(relationship.get(i));
-                }else{
-                    Intent intent = new Intent(getActivity(), ContactProfile.class);
-                    String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
-                    intent.putExtra("contact", contactS);
-                    startActivity(intent);
-                }
+        if(contactString != null){
+            contactInfo = contactManager.getFromBase64(contactString);
+            relationshipL = contactInfo.getRelationship();
+            relationship = new ArrayList<>();
+            sharedPref = getActivity().getSharedPreferences(
+                    getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            for(int i = 0; i<relationshipL.size();i++){
+                String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
+                ContactInfo contactC = contactManager.getFromBase64(contactS);
+                relationship.add(contactC);
             }
-        });
+
+            showName.setText(contactInfo.getName());
+            showPhone.setText(contactInfo.getPhone());
+            adapter = new MyAdapter(getContext(), relationship, 3);
+            lv_allrelation.setAdapter(adapter);
+            lv_allrelation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(if_land){
+                        mCallback.onContactSelected(relationship.get(i));
+                    }else{
+                        Intent intent = new Intent(getActivity(), ContactProfile.class);
+                        String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");
+                        intent.putExtra("contact", contactS);
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
+        else{
+            if(if_m){
+                ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
+                cfl.removeAllViews();
+            }else if (if_d){
+                ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameD_right);
+                cfl.removeAllViews();
+            }else if(if_p){
+                ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameP_right);
+                cfl.removeAllViews();
+            }
+        }
 
     }
 }

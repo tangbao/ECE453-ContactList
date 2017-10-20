@@ -3,6 +3,7 @@ package me.tbis.contactlist;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
@@ -69,10 +70,14 @@ public class ContactManager {
     List <ContactInfo> findAll(Context context){
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
         Map<String, ?> allContacts;
         List <ContactInfo> results = new ArrayList <>();
         allContacts = sharedPref.getAll();
+        if(sharedPref.contains("savedStatus")){
+            allContacts.remove("savedStatus");
+            Log.d("savedStatus exists","remove");
+        }
+
 
         for(Map.Entry<String, ?>  i : allContacts.entrySet()){
             String contactString = i.getValue().toString();

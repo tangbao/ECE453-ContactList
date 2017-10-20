@@ -6,9 +6,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.ContentFrameLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,8 @@ public class FragDetails extends Fragment {
     private MyAdapter adapter;
     private ListView lv_relation;
     private TextView etName, etPhone;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
 
     private ContactManager contactManager = new ContactManager();
 
@@ -59,30 +63,22 @@ public class FragDetails extends Fragment {
         return view;
     }
 
-
-
-
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        allContact =  contactManager.findAll(getContext());
+        adapter = new MyAdapter(getContext(), allContact,2);
+        lv_relation.setAdapter(adapter);
 
-        if(savedInstanceState != null){
-            String name = savedInstanceState.getString("name");
-            String phone = savedInstanceState.getString("phone");
-            etName.setText(name);
-            etPhone.setText(phone);
-        }else {
-            Toast.makeText(getContext(),"shit",Toast.LENGTH_LONG).show();
+        sharedPref = getActivity().getSharedPreferences(
+                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        String conString = sharedPref.getString("savedStatus",null);
+
+        if(conString != null){
+            recoverStatus(conString);
+            Log.d("conString","no null");
         }
-//        else {
-//            Bundle b = getArguments().getBundle("saveViewState");
-//            if(b!=null){
-//                String name = b.getString("name");
-//                String phone = b.getString("phone");
-//                etName.setText(name);
-//                etPhone.setText(phone);
-//            }
-//        }
 
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
 
@@ -95,9 +91,6 @@ public class FragDetails extends Fragment {
 //                (getActivity().findViewById(R.id.frameD_right) != null) ||
 //                (getActivity().findViewById(R.id.frameP_right) != null);
 
-        allContact =  contactManager.findAll(getContext());
-        adapter = new MyAdapter(getContext(), allContact,2);
-        lv_relation.setAdapter(adapter);
         lv_relation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -116,6 +109,8 @@ public class FragDetails extends Fragment {
             @Override
             public void onClick(View view) {
 
+                editor.putString("savedStatus", null);
+                editor.apply();
 
                 if(etName.getText().toString().isEmpty() || etPhone.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"You must fill in all the info!",Toast.LENGTH_LONG).show();
@@ -172,20 +167,59 @@ public class FragDetails extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        outState.putString("name", etName.getText().toString());
-        outState.putString("phone", etPhone.getText().toString());
+    public void onSaveInstanceState(Bundle bundle){
+        super.onSaveInstanceState(bundle);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        List<Map<String, String>> relationship = new ArrayList<>();
+
+        for(int i = 0; i<allContact.size();i++){
+            if(allContact.get(i).getChk()){
+                Map<String, String> map = new HashMap<>();
+                map.put("id", allContact.get(i).getId()+"");
+                map.put("name", allContact.get(i).getName());
+                relationship.add(map);
+            }
+        }
+
+        ContactInfo contactSaving = new ContactInfo(0,
+                etName.getText().toString(), etPhone.getText().toString(),
+                relationship, false);
+
+        if(!contactSaving.getBase64().equals(sharedPref.getString("savedStatus",null))){
+            Toast.makeText(getContext(), "The draft has been saved.", Toast.LENGTH_LONG).show();
+            editor.putString("savedStatus", contactSaving.getBase64());
+            editor.apply();
+        }
+
+
     }
 
-//    @Override
-//    public void onDestroyView(){
-//        super.onDestroyView();
-//        Bundle saveState = new Bundle();
-//        saveState.putString("name", etName.getText().toString());
-//        saveState.putString("phone", etPhone.getText().toString());
-//        Bundle b = getArguments();
-//        b.putBundle("saveViewState", saveState);
-//    }
+    private void delStatus(){
+        sharedPref = getActivity().getSharedPreferences(
+                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        editor.putString("savedStatus",null);
+        editor.apply();
+    }
+
+    private void recoverStatus(String conString){
+        ContactInfo contactRecovering = contactManager.getFromBase64(conString);
+        etName.setText(contactRecovering.getName());
+        etPhone.setText(contactRecovering.getPhone());
+        List<Map<String, String>> relationship = contactRecovering.getRelationship();
+        for(int i = 0; i < relationship.size();i++) {
+            for (int j = 0; j < allContact.size(); j++) {
+                if (allContact.get(j).getId() == Integer.valueOf(relationship.get(i).get("id"))) {
+                    allContact.get(j).setChk(true);//find the contact in the list, update it
+                    adapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+
+    }
+
 
 }

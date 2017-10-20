@@ -2,9 +2,11 @@ package me.tbis.contactlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.ContentFrameLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,15 @@ public class FragMain extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+
+//        if(getFragmentManager().getBackStackEntryCount() == 0){
+//            SharedPreferences sharedPref = getActivity().getSharedPreferences(
+//                    getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putString("savedStatus",null);
+//            editor.apply();
+//        }
+
         if_m = getActivity().findViewById(R.id.frame_right) != null;
         if_d = getActivity().findViewById(R.id.frameD_right) != null;
         if_p = getActivity().findViewById(R.id.frameP_right) != null;
@@ -66,6 +77,7 @@ public class FragMain extends Fragment{
         if_land = (getActivity().findViewById(R.id.frame_right) != null) ;
 //                || (getActivity().findViewById(R.id.frameD_right) != null)
 //                || (getActivity().findViewById(R.id.frameP_right) != null);
+
 
         lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,5 +150,4 @@ public class FragMain extends Fragment{
             adapter.notifyDataSetChanged();
         }
     }
-
 }
