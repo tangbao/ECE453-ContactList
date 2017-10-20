@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +23,15 @@ import me.tbis.contactlist.MyInterface.OnContactSelectedListener;
 
 public class FragProfile extends Fragment {
     private boolean if_land;
+    private TextView showName, showPhone;
+    private ListView lv_allrelation;
+    private MyAdapter adapter;
+    private ContactInfo contactInfo;
+    private List<Map<String, String>> relationshipL;
+    private List<ContactInfo> relationship;
+    private SharedPreferences sharedPref;
+    private ContactManager contactManager = new ContactManager();
+
     OnContactSelectedListener mCallback;
 
     @Override
@@ -36,33 +44,36 @@ public class FragProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.frag_profile, container, false);
+        View view = inflater.inflate(R.layout.frag_profile, container, false);
+        showName = view.findViewById(R.id.showName);
+        showPhone = view.findViewById(R.id.showPhone);
+        lv_allrelation = view.findViewById(R.id.lv_allrelation);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
+        //if_land_from_self = (getActivity().findViewById(R.id.frameP_right) != null);
+
+//        if_land = (getActivity().findViewById(R.id.frame_right) != null) ||
+//                (getActivity().findViewById(R.id.frameD_right) != null) ||
+//                (getActivity().findViewById(R.id.frameP_right) != null);
 
         String contactString ;
 
          if(if_land){
              contactString = getArguments().getString("contact");
-         }else{
+         }else {
              Intent intent = getActivity().getIntent();
              contactString = intent.getStringExtra("contact");
          }
 
-        TextView showName = getActivity().findViewById(R.id.showName);
-        TextView showPhone = getActivity().findViewById(R.id.showPhone);
-        final ListView lv_allrelation = getActivity().findViewById(R.id.lv_allrelation);
-        ListAdapter adapter;
-
-        ContactManager contactManager = new ContactManager();
-        final ContactInfo contactInfo = contactManager.getFromBase64(contactString);
-        final List<Map<String, String>> relationshipL = contactInfo.getRelationship();
-        final List<ContactInfo> relationship = new ArrayList<>();
-        final SharedPreferences sharedPref = getActivity().getSharedPreferences(
+        contactInfo = contactManager.getFromBase64(contactString);
+        relationshipL = contactInfo.getRelationship();
+        relationship = new ArrayList<>();
+        sharedPref = getActivity().getSharedPreferences(
                 getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         for(int i = 0; i<relationshipL.size();i++){
             String contactS = sharedPref.getString(relationshipL.get(i).get("id"),"");

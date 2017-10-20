@@ -17,14 +17,22 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
         if (findViewById(R.id.frame_left) != null) {
             FragMain fragMain = new FragMain();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.frame_left, fragMain);
             transaction.commit();
+        } else if(findViewById(R.id.frame_main) != null){
+            FragMain fragMain = new FragMain();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_main, fragMain);
+            transaction.commit();
         }
-
     }
 
     public void onContactSelected(ContactInfo contactInfo){

@@ -1,3 +1,4 @@
+
 package me.tbis.contactlist;
 
 import android.app.Activity;
@@ -31,8 +32,14 @@ public class FragDetails extends Fragment {
     private boolean if_land;
     private ContactInfo contactInfo;
     private List<ContactInfo> allContact;
-    OnContactSelectedListener mCallback;
+    private Button btn_ap;
+    private MyAdapter adapter;
+    private ListView lv_relation;
+    private TextView etName, etPhone;
 
+    private ContactManager contactManager = new ContactManager();
+
+    OnContactSelectedListener mCallback;
 
 
     @Override
@@ -44,21 +51,52 @@ public class FragDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.frag_details, container, false);
+        View view = inflater.inflate(R.layout.frag_details, container, false);
+        btn_ap = view.findViewById(R.id.btn_ap);
+        lv_relation = view.findViewById(R.id.lv_relation);
+        etName = view.findViewById(R.id.etName);
+        etPhone = view.findViewById(R.id.etPhone);
+        return view;
     }
 
+
+
+
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null){
+            String name = savedInstanceState.getString("name");
+            String phone = savedInstanceState.getString("phone");
+            etName.setText(name);
+            etPhone.setText(phone);
+        }else {
+            Toast.makeText(getContext(),"shit",Toast.LENGTH_LONG).show();
+        }
+//        else {
+//            Bundle b = getArguments().getBundle("saveViewState");
+//            if(b!=null){
+//                String name = b.getString("name");
+//                String phone = b.getString("phone");
+//                etName.setText(name);
+//                etPhone.setText(phone);
+//            }
+//        }
 
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
 
-        Button btn_ap = getActivity().findViewById(R.id.btn_ap);
-        ListView lv_relation = getActivity().findViewById(R.id.lv_relation);
-        final ContactManager contactManager = new ContactManager();
+        final boolean if_m = getActivity().findViewById(R.id.frame_right) != null;
+        final boolean if_d = getActivity().findViewById(R.id.frameD_right) != null;
+        final boolean if_p = getActivity().findViewById(R.id.frameP_right) != null;
+
+
+//        if_land = (getActivity().findViewById(R.id.frame_right) != null) ||
+//                (getActivity().findViewById(R.id.frameD_right) != null) ||
+//                (getActivity().findViewById(R.id.frameP_right) != null);
+
         allContact =  contactManager.findAll(getContext());
-        MyAdapter adapter = new MyAdapter(getContext(), allContact,2);
+        adapter = new MyAdapter(getContext(), allContact,2);
         lv_relation.setAdapter(adapter);
         lv_relation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,8 +115,7 @@ public class FragDetails extends Fragment {
         btn_ap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextView etName = getActivity().findViewById(R.id.etName);
-                TextView etPhone = getActivity().findViewById(R.id.etPhone);
+
 
                 if(etName.getText().toString().isEmpty() || etPhone.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"You must fill in all the info!",Toast.LENGTH_LONG).show();
@@ -104,9 +141,22 @@ public class FragDetails extends Fragment {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         allContact = contactManager.listAddUpdate(allContact, contactInfo, getContext());
                         FragMain fragMain = new FragMain();
-                        fragmentTransaction.replace(R.id.frame_left,fragMain);
-                        ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
-                        cfl.removeAllViews();
+
+                        if(if_m){
+                            fragmentTransaction.replace(R.id.frame_left,fragMain);
+                            ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
+                            cfl.removeAllViews();
+                        }else if (if_d){
+                            fragmentTransaction.replace(R.id.frameD_left,fragMain);
+                            ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameD_right);
+                            cfl.removeAllViews();
+                        }else if(if_p){
+                            fragmentTransaction.replace(R.id.frameP_left,fragMain);
+                            ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameP_right);
+                            cfl.removeAllViews();
+                        }
+
+
                         fragmentTransaction.commit();
 
                     }else{
@@ -120,5 +170,22 @@ public class FragDetails extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putString("name", etName.getText().toString());
+        outState.putString("phone", etPhone.getText().toString());
+    }
+
+//    @Override
+//    public void onDestroyView(){
+//        super.onDestroyView();
+//        Bundle saveState = new Bundle();
+//        saveState.putString("name", etName.getText().toString());
+//        saveState.putString("phone", etPhone.getText().toString());
+//        Bundle b = getArguments();
+//        b.putBundle("saveViewState", saveState);
+//    }
 
 }

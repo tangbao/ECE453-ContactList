@@ -10,11 +10,17 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <fragment
-        android:id = "@+id/frag_details"
-        android:name="me.tbis.contactlist.FragDetails"
+    <!--<fragment-->
+        <!--android:id = "@+id/frag_details"-->
+        <!--android:name="me.tbis.contactlist.FragDetails"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:layout="@layout/frag_details" />-->
+
+    <android.support.v7.widget.ContentFrameLayout
+        android:id="@+id/frameD_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/frag_details" />
+        android:layout_height="match_parent">
+    </android.support.v7.widget.ContentFrameLayout>
 
 </LinearLayout>

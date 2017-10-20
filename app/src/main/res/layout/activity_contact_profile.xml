@@ -5,14 +5,19 @@
     tools:context="me.tbis.contactlist.ContactProfile"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1">
+    android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/frag_profile"
-        android:name="me.tbis.contactlist.FragProfile"
+    <!--<fragment-->
+        <!--android:id="@+id/frag_profile"-->
+        <!--android:name="me.tbis.contactlist.FragProfile"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:layout="@layout/frag_profile" />-->
+
+    <android.support.v7.widget.ContentFrameLayout
+        android:id="@+id/frameP_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/frag_profile" />
+        android:layout_height="match_parent">
+    </android.support.v7.widget.ContentFrameLayout>
 
 </LinearLayout>

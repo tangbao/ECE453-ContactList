@@ -1,12 +1,10 @@
 package me.tbis.contactlist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.ContentFrameLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,18 @@ import static android.app.Activity.RESULT_OK;
 public class FragMain extends Fragment{
     private boolean if_land;
     private ListView lv_contact;
+    private Button btn_add, btn_del;
     private MyAdapter adapter;
     private ContactManager contactManager;
     private List<ContactInfo> listContacts;
     OnContactSelectedListener mCallback;
 
+    private boolean if_m,if_d,if_p;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        //set listener
         mCallback = (OnContactSelectedListener) context;
     }
 
@@ -42,7 +44,10 @@ public class FragMain extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_main, container, false);
 
+        //find all the controls in view
         lv_contact = view.findViewById(R.id.lv_contact);
+        btn_add = view.findViewById(R.id.btn_add);
+        btn_del = view.findViewById(R.id.btn_del);
         contactManager = new ContactManager();
         listContacts = contactManager.findAll(getContext());
         adapter = new MyAdapter(getContext(), listContacts,1);
@@ -54,11 +59,13 @@ public class FragMain extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+        if_m = getActivity().findViewById(R.id.frame_right) != null;
+        if_d = getActivity().findViewById(R.id.frameD_right) != null;
+        if_p = getActivity().findViewById(R.id.frameP_right) != null;
 
-        if_land = (getActivity().findViewById(R.id.frame_right) != null);
-
-        Button btn_add = getActivity().findViewById(R.id.btn_add);
-        Button btn_del = getActivity().findViewById(R.id.btn_del);
+        if_land = (getActivity().findViewById(R.id.frame_right) != null) ;
+//                || (getActivity().findViewById(R.id.frameD_right) != null)
+//                || (getActivity().findViewById(R.id.frameP_right) != null);
 
         lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -78,29 +85,21 @@ public class FragMain extends Fragment{
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(if_land) {
-                    FragDetails fragment = new FragDetails();
-                    getFragmentManager().beginTransaction().replace(R.id.frame_right, fragment).commit();
-                        if(getArguments() != null)
-                        {
-                            Toast.makeText(getContext(),"nmb",Toast.LENGTH_LONG).show();
-                            String contactString = getArguments().getString("contact");
-                            ContactManager contactManager = new ContactManager();
-                            ContactInfo contactInfo = contactManager.getFromBase64(contactString);
-                            listContacts.add(contactInfo);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                else {
+//                if(if_land) {
+//                    FragDetails fragDetails = new FragDetails();
+//                    getFragmentManager().beginTransaction().replace(R.id.frame_right, fragDetails).commit();
+//                    }
+//                else {
                     Intent intent = new Intent(getActivity(), ContactDetails.class);
                     startActivityForResult(intent, 0);
-                }
+                //}
             }
         });
 
         btn_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int cnt = 0;
                 for(int i = 0; i<listContacts.size();i++){
                     if(listContacts.get(i).getChk()){
                         listContacts = contactManager.listDelUpdate(listContacts, listContacts.get(i), getContext());
@@ -108,11 +107,20 @@ public class FragMain extends Fragment{
                         listContacts.remove(i);
                         adapter.notifyDataSetChanged();
                         i--;
+                        cnt++;
                     }
                 }
-                Toast.makeText(getContext(), "Delete Successfully", Toast.LENGTH_LONG).show();
-                if(if_land){
+                if(cnt > 0){
+                    Toast.makeText(getContext(), "Delete Successfully", Toast.LENGTH_LONG).show();
+                }
+                if(if_m){
                     ContentFrameLayout cfl =  getActivity().findViewById(R.id.frame_right);
+                    cfl.removeAllViews();
+                }else if (if_d){
+                    ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameD_right);
+                    cfl.removeAllViews();
+                }else if(if_p){
+                    ContentFrameLayout cfl =  getActivity().findViewById(R.id.frameP_right);
                     cfl.removeAllViews();
                 }
             }

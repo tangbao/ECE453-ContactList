@@ -14,14 +14,16 @@ import java.util.Map;
 /**
  * Created by tzzma on 2017/10/11.
  *
+ * it represents a contact
+ *
  */
 
 public class ContactInfo implements Serializable {
-    private int id;
+    private int id;         //a unique id
     private String name;
     private String phone;
-    private List<Map<String, String>> relationship;
-    private boolean chk;
+    private List<Map<String, String>> relationship; //in relationship, it only stores the id and name.
+    private boolean chk;    //to mark the contact is checked or not in the listview
 //    private String pic;
 
     ContactInfo(int id, String name, String phone, List<Map<String, String>> relationship, boolean chk){
@@ -30,9 +32,10 @@ public class ContactInfo implements Serializable {
         this.phone = phone;
         this.relationship = relationship;
         this.chk = chk;
-        //this.pic = "moren";
+        //this.pic = "default"; //TODO add pic
     }
 
+    //get a base64 string of this contact
     String getBase64(){
         try{
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -72,6 +75,7 @@ public class ContactInfo implements Serializable {
         this.id = id;
     }
 
+    //store the id and the name of new relationship
     void addRelationship(ContactInfo newR){
         Map<String, String> map = new HashMap<>();
         map.put("id", newR.getId()+"");

@@ -18,13 +18,31 @@ public class ContactDetails extends AppCompatActivity implements MyInterface.OnC
         setContentView(R.layout.activity_contact_details);
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if (findViewById(R.id.frameD_right) != null) {
+            FragMain fragMain = new FragMain();
+            FragDetails fragDetails = new FragDetails();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameD_left, fragMain);
+            transaction.replace(R.id.frameD_right, fragDetails);
+            transaction.commit();
+        } else if (findViewById(R.id.frameD_main) != null) {
+            FragDetails fragDetails = new FragDetails();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameD_main, fragDetails);
+            transaction.commit();
+        }
+    }
+
     public void onContactSelected(ContactInfo contactInfo){
         FragProfile fragProfile = new FragProfile();
         Bundle bundle = new Bundle();
         bundle.putString("contact", contactInfo.getBase64());
         fragProfile.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_right, fragProfile);
+        transaction.replace(R.id.frameD_right, fragProfile);
         transaction.addToBackStack(null);
         transaction.commit();
     }

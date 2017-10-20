@@ -63,7 +63,7 @@ class MyAdapter extends BaseAdapter {
             holder.mCheckBox = convertView.findViewById(R.id.checkBox);
             holder.mTextView = convertView.findViewById(R.id.textName);
 
-            if(mode == 3){
+            if(mode == 3){ //set checkboxes invisible
                 holder.mCheckBox.setVisibility(View.INVISIBLE);
             }
 
@@ -75,9 +75,10 @@ class MyAdapter extends BaseAdapter {
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mList.get(position).setChk(isChecked);
+                mList.get(position).setChk(isChecked); //update status
                 if(mode == 2){
                     if(isChecked){
+                        //the item get checked, find the first item in the list that is not checked,exchange position
                         for(int i = 0;i<position;i++){
                             if(!mList.get(i).getChk()){
                                 ContactInfo temp = mList.get(i);
@@ -88,6 +89,7 @@ class MyAdapter extends BaseAdapter {
                             }
                         }
                     }else{
+                        //the item get unchecked, exchange it's position with next one, until next one is not checked.
                         int p_now = position;
                         for(int i = position;i<mList.size();i++){
                             if(mList.get(i).getChk()){

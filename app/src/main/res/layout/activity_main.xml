@@ -10,12 +10,18 @@
     >
 
 
-    <fragment
-        android:id="@+id/frag_main"
-        android:name="me.tbis.contactlist.FragMain"
+    <!--<fragment-->
+        <!--android:id="@+id/frag_main"-->
+        <!--android:name="me.tbis.contactlist.FragMain"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:layout="@layout/frag_main"-->
+        <!--/>-->
+
+    <android.support.v7.widget.ContentFrameLayout
+        android:id="@+id/frame_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/frag_main"
-        />
+        android:layout_height="match_parent">
+    </android.support.v7.widget.ContentFrameLayout>
 
 </LinearLayout>

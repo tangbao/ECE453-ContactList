@@ -9,6 +9,7 @@ package me.tbis.contactlist;
 
 public class MyInterface {
 
+    //when select a contact in the listview
     interface OnContactSelectedListener{
         void onContactSelected(ContactInfo contactInfo);
     }
