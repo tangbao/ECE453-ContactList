@@ -57,7 +57,6 @@ public class FragProfile extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
-        //if_land_from_self = (getActivity().findViewById(R.id.frameP_right) != null);
 
 
         final boolean if_m = getActivity().findViewById(R.id.frame_right) != null;
@@ -65,9 +64,6 @@ public class FragProfile extends Fragment {
         final boolean if_p = getActivity().findViewById(R.id.frameP_right) != null;
 
 
-//        if_land = (getActivity().findViewById(R.id.frame_right) != null) ||
-//                (getActivity().findViewById(R.id.frameD_right) != null) ||
-//                (getActivity().findViewById(R.id.frameP_right) != null);
 
         String contactString ;
 

@@ -62,21 +62,12 @@ public class FragMain extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-//        if(getFragmentManager().getBackStackEntryCount() == 0){
-//            SharedPreferences sharedPref = getActivity().getSharedPreferences(
-//                    getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPref.edit();
-//            editor.putString("savedStatus",null);
-//            editor.apply();
-//        }
 
         if_m = getActivity().findViewById(R.id.frame_right) != null;
         if_d = getActivity().findViewById(R.id.frameD_right) != null;
         if_p = getActivity().findViewById(R.id.frameP_right) != null;
 
         if_land = (getActivity().findViewById(R.id.frame_right) != null) ;
-//                || (getActivity().findViewById(R.id.frameD_right) != null)
-//                || (getActivity().findViewById(R.id.frameP_right) != null);
 
 
         lv_contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -97,14 +88,8 @@ public class FragMain extends Fragment{
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(if_land) {
-//                    FragDetails fragDetails = new FragDetails();
-//                    getFragmentManager().beginTransaction().replace(R.id.frame_right, fragDetails).commit();
-//                    }
-//                else {
-                    Intent intent = new Intent(getActivity(), ContactDetails.class);
-                    startActivityForResult(intent, 0);
-                //}
+                Intent intent = new Intent(getActivity(), ContactDetails.class);
+                startActivityForResult(intent, 0);
             }
         });
 

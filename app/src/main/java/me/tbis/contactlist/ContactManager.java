@@ -73,11 +73,6 @@ public class ContactManager {
         Map<String, ?> allContacts;
         List <ContactInfo> results = new ArrayList <>();
         allContacts = sharedPref.getAll();
-        if(sharedPref.contains("savedStatus")){
-            allContacts.remove("savedStatus");
-            Log.d("savedStatus exists","remove");
-        }
-
 
         for(Map.Entry<String, ?>  i : allContacts.entrySet()){
             String contactString = i.getValue().toString();

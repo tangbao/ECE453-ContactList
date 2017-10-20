@@ -15,7 +15,7 @@ public class MyInterface {
     }
 
     interface OnSaveStatusListener{
-        void onSaveStatus();
+        void onSaveStatus(ContactInfo contactInfo);
     }
 
 }

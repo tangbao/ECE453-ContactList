@@ -1,7 +1,6 @@
 
 package me.tbis.contactlist;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,18 +36,17 @@ public class FragDetails extends Fragment {
     private MyAdapter adapter;
     private ListView lv_relation;
     private TextView etName, etPhone;
-    private SharedPreferences sharedPref;
-    private SharedPreferences.Editor editor;
 
     private ContactManager contactManager = new ContactManager();
 
     OnContactSelectedListener mCallback;
-
+    OnSaveStatusListener mSaveStatus;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mCallback = (OnContactSelectedListener) context;
+        mSaveStatus = (OnSaveStatusListener) context;
     }
 
     @Override
@@ -70,37 +67,27 @@ public class FragDetails extends Fragment {
         adapter = new MyAdapter(getContext(), allContact,2);
         lv_relation.setAdapter(adapter);
 
-        sharedPref = getActivity().getSharedPreferences(
-                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
-        String conString = sharedPref.getString("savedStatus",null);
-
-        if(conString != null){
+        //when there is something in arguments, get it and recover the data from it
+        if(getArguments()!=null){
+            String conString = getArguments().getString("contactRecovering");
             recoverStatus(conString);
-            Log.d("conString","no null");
         }
 
         if_land = (getActivity().findViewById(R.id.frame_right) != null);
-
         final boolean if_m = getActivity().findViewById(R.id.frame_right) != null;
         final boolean if_d = getActivity().findViewById(R.id.frameD_right) != null;
         final boolean if_p = getActivity().findViewById(R.id.frameP_right) != null;
-
-
-//        if_land = (getActivity().findViewById(R.id.frame_right) != null) ||
-//                (getActivity().findViewById(R.id.frameD_right) != null) ||
-//                (getActivity().findViewById(R.id.frameP_right) != null);
 
         lv_relation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             if(if_land){
-                mCallback.onContactSelected(allContact.get(i));
+                mCallback.onContactSelected(allContact.get(i)); //pass contact by call back function
             }else{
                 Intent intent = new Intent(getActivity(), ContactProfile.class);
                 String contactS = allContact.get(i).getBase64();
                 intent.putExtra("contact", contactS);
-                startActivity(intent);
+                startActivity(intent); //pass contact by intent
             }
             }
         });
@@ -109,14 +96,11 @@ public class FragDetails extends Fragment {
             @Override
             public void onClick(View view) {
 
-                editor.putString("savedStatus", null);
-                editor.apply();
-
                 if(etName.getText().toString().isEmpty() || etPhone.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"You must fill in all the info!",Toast.LENGTH_LONG).show();
                 }else{
                     List<Map<String, String>> relationship = new ArrayList<>();
-
+                    //just store id and name of a related contact
                     for(int i = 0; i<allContact.size();i++){
                         if(allContact.get(i).getChk()){
                             Map<String, String> map = new HashMap<>();
@@ -129,12 +113,12 @@ public class FragDetails extends Fragment {
                     contactInfo = new ContactInfo(0,
                             etName.getText().toString(), etPhone.getText().toString(),
                             relationship, false);
-                    contactManager.add(contactInfo, getContext());
+                    contactManager.add(contactInfo, getContext()); //add it into sharedPref
 
                     if(if_land){
                         FragmentManager fragmentManager = getFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        allContact = contactManager.listAddUpdate(allContact, contactInfo, getContext());
+                        allContact = contactManager.listAddUpdate(allContact, contactInfo, getContext()); //update
                         FragMain fragMain = new FragMain();
 
                         if(if_m){
@@ -168,10 +152,6 @@ public class FragDetails extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle bundle){
-        super.onSaveInstanceState(bundle);
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(
-                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
         List<Map<String, String>> relationship = new ArrayList<>();
 
         for(int i = 0; i<allContact.size();i++){
@@ -186,22 +166,8 @@ public class FragDetails extends Fragment {
         ContactInfo contactSaving = new ContactInfo(0,
                 etName.getText().toString(), etPhone.getText().toString(),
                 relationship, false);
+        mSaveStatus.onSaveStatus(contactSaving); //pass it to details activity
 
-        if(!contactSaving.getBase64().equals(sharedPref.getString("savedStatus",null))){
-            Toast.makeText(getContext(), "The draft has been saved.", Toast.LENGTH_LONG).show();
-            editor.putString("savedStatus", contactSaving.getBase64());
-            editor.apply();
-        }
-
-
-    }
-
-    private void delStatus(){
-        sharedPref = getActivity().getSharedPreferences(
-                getActivity().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
-        editor.putString("savedStatus",null);
-        editor.apply();
     }
 
     private void recoverStatus(String conString){
@@ -209,8 +175,11 @@ public class FragDetails extends Fragment {
         etName.setText(contactRecovering.getName());
         etPhone.setText(contactRecovering.getPhone());
         List<Map<String, String>> relationship = contactRecovering.getRelationship();
+
+
         for(int i = 0; i < relationship.size();i++) {
             for (int j = 0; j < allContact.size(); j++) {
+                Log.d("allcontacts", allContact.get(j).getId()+"");
                 if (allContact.get(j).getId() == Integer.valueOf(relationship.get(i).get("id"))) {
                     allContact.get(j).setChk(true);//find the contact in the list, update it
                     adapter.notifyDataSetChanged();
