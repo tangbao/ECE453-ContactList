@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\297d8f2bd8f5c541edc31f92050a02b0dbba2331\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="fcd01fd11233459f546c437ec927e9b61bf7caf1">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_eb7175dc7f39d314bb21e160cc19593544e616c4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\26.0.0-alpha1\support-annotations-26.0.0-alpha1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="023ee503b631f69511e335a061ea008f8da60f40">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\support-annotations-26.0.0-alpha1_710c18d80c6c4e170ae99fa17871b75cd865f457.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\a5b81762feb257652f051512bf7570d76e94bba6\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="9935891f23923f39d002087085d9696568a9f657">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_cd0f3d414a2c4381dd2324f78e039f7bfa3d3a39.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\c60ef8ef2e31139f1400fdd6d4cba09bcb2f2fe0\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="8df0e365e40beb151bc42dee20817721a6cab7b0">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_dd27c98dc8217ea58986caffaf562105d6e407b4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\b31cfa98ea3e1060a9141dab20ed61e0eb47343f\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="2e92aa0163544a804a0b34f169ca61801770839a">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_5f10a3f7c0fa13c823dc1008134d600de27720b2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\59151a65a7c2bbe9287ca89fb12eaba9712d5e74\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="18d31838aa4fcc768a8a0516e22cc13b94655d89">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_533d32d6c896b4ff68ec8f965b64f781168f00c7.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="38b4b5498555f02bced1e31d243f4263b1168b5f">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_c2bc23fd4f89725984aee120908a36c6c164aaa4\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\16aead262d90f30e70f03236325192cc2d0d24dc\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="47471eb19df288158b00b8d9cfa41bce7373f5cc">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_fefc54bdd3278eabb86387bf3000899b3edcff06.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\116a213007ddda500bef84b9fcafa156ad07284f\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="952944218ecedea1554a513dec0c14d570642843">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_3f4d612e93fca4fc81b36f5aacb98a1c15bb820a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\22178492510b77e64070c39dd628f75f1e9825f7\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_0abc860f7e74765b41ea616b01dc9308c5254af0.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_826c74a535262f11c4ef60056d8d5560b4399905\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\tzzma\.android\build-cache\8bbe7515a25a5f791e85993db36f4f15adc7a6ad\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="88246166d5afb106f532f6e6deae683c66b42c89">
+        <dex dex="C:\Users\tzzma\source\Android\ContactList\app\build\intermediates\pre-dexed\debug\classes_6bc91ad37aff009244d855c45786ebfffc9893f5.jar" />
+    </item>
+
+</items>
